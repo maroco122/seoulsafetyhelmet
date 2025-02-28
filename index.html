@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>안전 위반 사항 체크리스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2b2b2b;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .check-btn {
+            flex: 1;
+            margin: 5px;
+            padding: 15px;
+            background-color: #4a4a4a;
+            border: 2px solid #ffcc00;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .check-btn:hover {
+            background-color: #ffcc00;
+            color: #black;
+        }
+        .check-btn.selected {
+            background-color: #ff4500;
+            border-color: #fff;
+        }
+        #confirm-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff4500;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #confirm-btn:hover {
+            background-color: #e03e00;
+        }
+        #recommend-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+        #recommend-btn:hover {
+            background-color: #e6b800;
+        }
+        #recommend-note {
+            font-size: 14px;
+            color: #ffcc00;
+            margin-top: 10px;
+            display: none;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #3a3a3a;
+            border-radius: 5px;
+            display: none;
+            opacity: 0.1; /* 거의 보이지 않게 */
+            transition: opacity 0.3s;
+        }
+        #result.visible {
+            opacity: 1; /* 뚜렷하게 */
+        }
+        @media (max-width: 600px) {
+            .check-btn {
+                font-size: 12px;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 과태료 및 벌금이 부과될 수 있는 12가지 위반 사항</h1>
+        <div class="button-row">
+            <button class="check-btn" data-id="1">안전모 등 보호장비 미착용</button>
+            <button class="check-btn" data-id="2">보호장비 미지급</button>
+            <button class="check-btn" data-id="3">안전 난간 미설치</button>
+        </div>
+        <div class="button-row">
+            <button class="check-btn" data-id="4">작업발판 미설치</button>
+            <button class="check-btn" data-id="5">기계 방호장치 미설치</button>
+            <button class="check-btn" data-id="6">안전교육 미실시</button>
+        </div>
+        <div class="button-row">
+            <button class="check-btn" data-id="7">기계 점검 미실시</button>
+            <button class="check-btn" data-id="8">유해 작업 안전조치 미이행</button>
+            <button class="check-btn" data-id="9">중대재해 미보고</button>
+        </div>
+        <div class="button-row">
+            <button class="check-btn" data-id="10">위험성 평가 미실시</button>
+            <button class="check-btn" data-id="11">유해물질 보호조치 미흡</button>
+            <button class="check-btn" data-id="12">건강진단 미실시</button>
+        </div>
+        <button id="confirm-btn">확인</button>
+        <button id="recommend-btn">인쇄된 안전모 추천 상품 보기</button>
+        <div id="recommend-note">추천상품을 보고 오시면 결과값이 보입니다.</div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const violations = [
+            { id: 1, title: "안전모 등 보호장비 미착용", desc: "근로자가 보호구(안전모, 안전화, 보호장갑 등)를 미착용한 경우", fine: "근로자 최대 50만원, 사업주 최대 1,000만원" },
+            { id: 2, title: "보호장비 미지급", desc: "사업주가 근로자에게 보호장비를 지급하지 않거나 착용을 지도하지 않은 경우", fine: "최대 1,000만원" },
+            { id: 3, title: "안전 난간 미설치", desc: "건설 현장 등에서 추락 방지용 난간이나 안전망을 설치하지 않은 경우", fine: "최대 1,000만원" },
+            { id: 4, title: "작업발판 미설치", desc: "고소 작업 시 적절한 발판이나 비계를 설치하지 않은 경우", fine: "최대 500만원" },
+            { id: 5, title: "기계 방호장치 미설치", desc: "프레스, 절단기, 컨베이어 등의 방호장치를 설치하지 않거나 제거한 경우", fine: "최대 1,500만원" },
+            { id: 6, title: "안전교육 미실시", desc: "신규 근로자나 작업 변경 시 필수적인 안전교육을 하지 않은 경우", fine: "최대 500만원" },
+            { id: 7, title: "기계 점검 미실시", desc: "정기적인 기계·설비 안전점검을 하지 않거나 기록을 남기지 않은 경우", fine: "최대 500만원" },
+            { id: 8, title: "유해 작업 안전조치 미이행", desc: "밀폐공간 작업(산소 부족, 유독가스 발생 가능)에서 환기 등 안전조치를 하지 않은 경우", fine: "최대 1,500만원" },
+            { id: 9, title: "중대재해 미보고", desc: "중대재해(사망, 3명 이상 부상 등) 발생 시 신고하지 않은 경우", fine: "최대 5,000만원" },
+            { id: 10, title: "위험성 평가 미실시", desc: "사업장이 정기적으로 위험성 평가를 수행하지 않거나 개선 조치를 하지 않은 경우", fine: "최대 500만원" },
+            { id: 11, title: "유해물질 보호조치 미흡", desc: "유해화학물질 취급 시 적절한 보호구 지급, 환기시설 설치 등을 하지 않은 경우", fine: "최대 1,000만원" },
+            { id: 12, title: "건강진단 미실시", desc: "유해환경에서 작업하는 근로자의 건강검진을 실시하지 않거나 결과를 관리하지 않은 경우", fine: "최대 500만원" }
+        ];
+
+        let selectedViolations = JSON.parse(localStorage.getItem('selectedViolations')) || [];
+        let isVisited = localStorage.getItem('isVisited') === 'true';
+
+        const buttons = document.querySelectorAll('.check-btn');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const recommendBtn = document.getElementById('recommend-btn');
+        const recommendNote = document.getElementById('recommend-note');
+        const resultDiv = document.getElementById('result');
+
+        // 버튼 초기 상태 설정
+        buttons.forEach(btn => {
+            if (selectedViolations.includes(parseInt(btn.dataset.id))) {
+                btn.classList.add('selected');
+            }
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('selected');
+                const id = parseInt(btn.dataset.id);
+                if (selectedViolations.includes(id)) {
+                    selectedViolations = selectedViolations.filter(v => v !== id);
+                } else {
+                    selectedViolations.push(id);
+                }
+            });
+        });
+
+        // 확인 버튼 클릭 시
+        confirmBtn.addEventListener('click', () => {
+            if (selectedViolations.length > 0) {
+                localStorage.setItem('selectedViolations', JSON.stringify(selectedViolations));
+                localStorage.setItem('isVisited', 'false'); // URL 방문 전 상태
+                recommendBtn.style.display = 'block';
+                recommendNote.style.display = 'block';
+                showResults(false); // 희미하게 표시
+            } else {
+                alert('위반 사항을 선택해주세요!');
+            }
+        });
+
+        // 추천 상품 버튼 클릭 시
+        recommendBtn.addEventListener('click', () => {
+            localStorage.setItem('isVisited', 'true'); // 방문 상태 저장
+            window.location.href = 'https://smartstore.naver.com/allgagu/products/11533092598';
+        });
+
+        // 결과 표시 함수
+        function showResults(isVisible) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<h2>선택된 위반 사항</h2>';
+            selectedViolations.forEach(id => {
+                const violation = violations.find(v => v.id === id);
+                resultDiv.innerHTML += `
+                    <p><strong>${violation.title}</strong><br>
+                    ${violation.desc}<br>
+                    과태료: ${violation.fine}</p>
+                `;
+            });
+            if (isVisible) {
+                resultDiv.classList.add('visible');
+            } else {
+                resultDiv.classList.remove('visible');
+            }
+        }
+
+        // 페이지 로드 시 처리
+        window.onload = () => {
+            if (selectedViolations.length > 0) {
+                recommendBtn.style.display = 'block';
+                recommendNote.style.display = 'block';
+                if (isVisited) {
+                    showResults(true); // 뚜렷하게 표시
+                } else {
+                    showResults(false); // 희미하게 표시
+                }
+            }
+        };
+    </script>
+</body>
+</html>
