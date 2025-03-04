@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>안전 위반 사항 체크리스트</title>
     <style>
         body {
@@ -10,99 +10,138 @@
             background-color: #2b2b2b;
             color: #fff;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
-        h1 {
-            font-size: 24px;
-            color: #ffcc00;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px #000;
-        }
+
         .container {
-            max-width: 100%;
+            width: 100%;
+            max-width: 400px;
             margin: 0 auto;
         }
+
+        h1 {
+            font-size: 1.2rem;
+            color: #ffcc00;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px #000;
+        }
+
         .button-row {
             display: flex;
-            justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
+
         .check-btn {
-            flex: 1;
-            margin: 5px;
-            padding: 15px;
+            flex: 1 1 calc(50% - 8px);
+            padding: 10px;
             background-color: #4a4a4a;
             border: 2px solid #ffcc00;
             border-radius: 5px;
             color: #fff;
-            font-size: 14px;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s, transform 0.1s;
+            box-sizing: border-box;
         }
-        .check-btn:hover {
+
+        .check-btn:active {
             background-color: #ffcc00;
-            color: #black;
+            color: #000;
+            transform: scale(0.98);
         }
+
         .check-btn.selected {
             background-color: #ff4500;
             border-color: #fff;
         }
-        #confirm-btn {
+
+        #confirm-btn, #recommend-btn {
             width: 100%;
-            padding: 15px;
-            background-color: #ff4500;
+            padding: 12px;
             border: none;
             border-radius: 5px;
             color: #fff;
-            font-size: 16px;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
+            transition: background-color 0.2s, transform 0.1s;
         }
-        #confirm-btn:hover {
+
+        #confirm-btn {
+            background-color: #ff4500;
+        }
+
+        #confirm-btn:active {
             background-color: #e03e00;
+            transform: scale(0.98);
         }
+
         #recommend-btn {
-            width: 100%;
-            padding: 15px;
             background-color: #ffcc00;
-            border: none;
-            border-radius: 5px;
             color: #000;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
             display: none;
         }
-        #recommend-btn:hover {
+
+        #recommend-btn:active {
             background-color: #e6b800;
+            transform: scale(0.98);
         }
+
         #recommend-note {
-            font-size: 14px;
+            font-size: 0.8rem;
             color: #ffcc00;
             margin-top: 10px;
             display: none;
         }
+
         #result {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 10px;
             background-color: #3a3a3a;
             border-radius: 5px;
             display: none;
-            opacity: 0.1; /* 거의 보이지 않게 */
+            opacity: 0.1;
             transition: opacity 0.3s;
+            font-size: 0.85rem;
+            max-height: 50vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
+
         #result.visible {
-            opacity: 1; /* 뚜렷하게 */
+            opacity: 1;
         }
-        @media (max-width: 600px) {
+
+        #result h2 {
+            font-size: 1rem;
+            margin: 0 0 10px;
+        }
+
+        #result p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1rem;
+            }
             .check-btn {
-                font-size: 12px;
+                font-size: 0.75rem;
+                padding: 8px;
+            }
+            #confirm-btn, #recommend-btn {
+                font-size: 0.8rem;
                 padding: 10px;
             }
-            h1 {
-                font-size: 20px;
+            #result {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -113,20 +152,24 @@
         <div class="button-row">
             <button class="check-btn" data-id="1">안전모 등 보호장비 미착용</button>
             <button class="check-btn" data-id="2">보호장비 미지급</button>
-            <button class="check-btn" data-id="3">안전 난간 미설치</button>
         </div>
         <div class="button-row">
+            <button class="check-btn" data-id="3">안전 난간 미설치</button>
             <button class="check-btn" data-id="4">작업발판 미설치</button>
+        </div>
+        <div class="button-row">
             <button class="check-btn" data-id="5">기계 방호장치 미설치</button>
             <button class="check-btn" data-id="6">안전교육 미실시</button>
         </div>
         <div class="button-row">
             <button class="check-btn" data-id="7">기계 점검 미실시</button>
             <button class="check-btn" data-id="8">유해 작업 안전조치 미이행</button>
-            <button class="check-btn" data-id="9">중대재해 미보고</button>
         </div>
         <div class="button-row">
+            <button class="check-btn" data-id="9">중대재해 미보고</button>
             <button class="check-btn" data-id="10">위험성 평가 미실시</button>
+        </div>
+        <div class="button-row">
             <button class="check-btn" data-id="11">유해물질 보호조치 미흡</button>
             <button class="check-btn" data-id="12">건강진단 미실시</button>
         </div>
@@ -161,7 +204,6 @@
         const recommendNote = document.getElementById('recommend-note');
         const resultDiv = document.getElementById('result');
 
-        // 버튼 초기 상태 설정
         buttons.forEach(btn => {
             if (selectedViolations.includes(parseInt(btn.dataset.id))) {
                 btn.classList.add('selected');
@@ -169,34 +211,29 @@
             btn.addEventListener('click', () => {
                 btn.classList.toggle('selected');
                 const id = parseInt(btn.dataset.id);
-                if (selectedViolations.includes(id)) {
-                    selectedViolations = selectedViolations.filter(v => v !== id);
-                } else {
-                    selectedViolations.push(id);
-                }
+                selectedViolations = selectedViolations.includes(id)
+                    ? selectedViolations.filter(v => v !== id)
+                    : [...selectedViolations, id];
             });
         });
 
-        // 확인 버튼 클릭 시
         confirmBtn.addEventListener('click', () => {
             if (selectedViolations.length > 0) {
                 localStorage.setItem('selectedViolations', JSON.stringify(selectedViolations));
-                localStorage.setItem('isVisited', 'false'); // URL 방문 전 상태
+                localStorage.setItem('isVisited', 'false');
                 recommendBtn.style.display = 'block';
                 recommendNote.style.display = 'block';
-                showResults(false); // 희미하게 표시
+                showResults(false);
             } else {
                 alert('위반 사항을 선택해주세요!');
             }
         });
 
-        // 추천 상품 버튼 클릭 시
         recommendBtn.addEventListener('click', () => {
-            localStorage.setItem('isVisited', 'true'); // 방문 상태 저장
+            localStorage.setItem('isVisited', 'true');
             window.location.href = 'https://www.coupang.com/vp/products/8622377185?vendorItemId=92020081138';
         });
 
-        // 결과 표시 함수
         function showResults(isVisible) {
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<h2>선택된 위반 사항</h2>';
@@ -208,23 +245,14 @@
                     과태료: ${violation.fine}</p>
                 `;
             });
-            if (isVisible) {
-                resultDiv.classList.add('visible');
-            } else {
-                resultDiv.classList.remove('visible');
-            }
+            resultDiv.classList.toggle('visible', isVisible);
         }
 
-        // 페이지 로드 시 처리
         window.onload = () => {
             if (selectedViolations.length > 0) {
                 recommendBtn.style.display = 'block';
                 recommendNote.style.display = 'block';
-                if (isVisited) {
-                    showResults(true); // 뚜렷하게 표시
-                } else {
-                    showResults(false); // 희미하게 표시
-                }
+                showResults(isVisited);
             }
         };
     </script>
